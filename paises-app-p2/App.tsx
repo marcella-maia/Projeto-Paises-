@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import {
   Button,
+  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -16,12 +17,26 @@ export default function App() {
   const [nomePais, setNomePais] = useState('')
   const [pais, setPais] = useState<any>(null)
 
+  const [capital, setCapital] = useState('')
+  const [paisCapital, setPaisCapital] = useState<any>(null)
+
   const buscarPorNome = () => {
 
     RESTCountriesClient.get(`name/${nomePais}`)
       .then(resultado => {
 
         setPais(resultado.data[0])
+
+      })
+
+  }
+
+  const buscarPorCapital = () => {
+
+    RESTCountriesClient.get(`capital/${capital}`)
+      .then(resultado => {
+
+        setPaisCapital(resultado.data[0])
 
       })
 
@@ -68,6 +83,48 @@ export default function App() {
               {pais.maps.openStreetMaps}
             </Text>
 
+            <Image
+              source={{
+                uri: pais.flags.png
+              }}
+              style={styles.bandeira}
+            />
+
+          </View>
+
+        )
+      }
+
+      <TextInput
+        style={styles.input}
+        placeholder='Digite a capital'
+        value={capital}
+        onChangeText={setCapital}
+      />
+
+      <Button
+        title='Buscar capital'
+        onPress={buscarPorCapital}
+      />
+
+      {
+        paisCapital && (
+
+          <View style={styles.resultado}>
+
+            <Text>
+              Nome oficial:
+              {' '}
+              {paisCapital.name.official}
+            </Text>
+
+            <Image
+              source={{
+                uri: paisCapital.flags.png
+              }}
+              style={styles.bandeira}
+            />
+
           </View>
 
         )
@@ -97,6 +154,12 @@ const styles = StyleSheet.create({
 
   resultado: {
     marginTop: 20
+  },
+
+  bandeira: {
+    width: 150,
+    height: 100,
+    marginTop: 10
   }
 
 })
