@@ -3,6 +3,7 @@ import { useState } from 'react'
 import {
   Button,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -28,6 +29,13 @@ export default function App() {
         setPais(resultado.data[0])
 
       })
+      .catch(() => {
+
+        setPais(null)
+
+        alert('País não encontrado')
+
+      })
 
   }
 
@@ -39,13 +47,37 @@ export default function App() {
         setPaisCapital(resultado.data[0])
 
       })
+      .catch(() => {
+
+        setPaisCapital(null)
+
+        alert('Capital não encontrada')
+
+      })
 
   }
 
+  const limparBuscaNome = () => {
+    setNomePais('')
+    setPais(null)
+  }
+
+  const limparBuscaCapital = () => {
+    setCapital('')
+    setPaisCapital(null)
+  }
+
   return (
+  
+  <ScrollView contentContainerStyle={styles.container}>
 
-    <View style={styles.container}>
+      <Text style={styles.titulo}>
+        Informações sobre Países
+      </Text>
 
+      <Text style={styles.subtitulo}>
+        Busca por país
+      </Text>
       <TextInput
         style={styles.input}
         placeholder='Digite o nome do país'
@@ -53,10 +85,23 @@ export default function App() {
         onChangeText={setNomePais}
       />
 
-      <Button
-        title='Buscar país'
-        onPress={buscarPorNome}
-      />
+      <View style={styles.botoes}>
+
+        <View style={styles.botao}>
+          <Button
+            title='Buscar país'
+            onPress={buscarPorNome}
+          />
+        </View>
+
+        <View style={styles.botao}>
+          <Button
+            title='Limpar'
+            onPress={limparBuscaNome}
+          />
+        </View>
+
+      </View>
 
       {
         pais && (
@@ -94,6 +139,9 @@ export default function App() {
 
         )
       }
+      <Text style={styles.subtitulo}>
+        Busca por capital
+      </Text>
 
       <TextInput
         style={styles.input}
@@ -102,11 +150,23 @@ export default function App() {
         onChangeText={setCapital}
       />
 
-      <Button
-        title='Buscar capital'
-        onPress={buscarPorCapital}
-      />
+      <View style={styles.botoes}>
 
+        <View style={styles.botao}>
+          <Button
+            title='Buscar capital'
+            onPress={buscarPorCapital}
+          />
+        </View>
+
+        <View style={styles.botao}>
+          <Button
+            title='Limpar'
+            onPress={limparBuscaCapital}
+          />
+        </View>
+
+      </View>
       {
         paisCapital && (
 
@@ -130,7 +190,7 @@ export default function App() {
         )
       }
 
-    </View>
+    </ScrollView>
 
   )
 
@@ -139,27 +199,65 @@ export default function App() {
 const styles = StyleSheet.create({
 
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20
+    padding: 20,
+    backgroundColor: '#f2f2f2',
+    flexGrow: 1
+  },
+
+  titulo: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 30,
+    marginTop: 40,
+    color: '#222'
+  },
+
+  subtitulo: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    marginTop: 20,
+    color: '#333'
   },
 
   input: {
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: '#ccc',
+    backgroundColor: 'white',
     marginBottom: 10,
-    padding: 10,
-    borderRadius: 5
+    padding: 12,
+    borderRadius: 10,
+    fontSize: 16
   },
 
   resultado: {
-    marginTop: 20
+    marginTop: 20,
+    marginBottom: 25,
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3
   },
 
   bandeira: {
-    width: 150,
-    height: 100,
-    marginTop: 10
-  }
+    width: 180,
+    height: 120,
+    marginTop: 15,
+    alignSelf: 'center',
+    borderRadius: 8
+  },
 
+  botoes: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  marginBottom: 10
+},
+
+  botao: {
+    width: '48%'
+  }
 })
