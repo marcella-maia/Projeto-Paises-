@@ -1,80 +1,102 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useState } from 'react'
 
-import RESTCountriesClient from "./utils/RESTCountriesClient";
-import { useState } from "react";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  View
+} from 'react-native'
 
-  interface Pais {
-    nomeComum: string;
-    nomeOficial: string;
-    nomeRusso: string;
-    bandeira: string;
-    foto: string;
-  }
+import React from 'react'
+import RESTCountriesClient from './utils/RESTCountriesClient'
 
 export default function App() {
-  const [termo, setTermo] = useState("");
-  const [pais, setPais] = useState<Pais>();
 
-  const carregarDados = (termoDeBusca : string) => {
-    RESTCountriesClient.get(`/name/${termoDeBusca}`).then((result) => {
-      console.log(result.data);
-    }).catch(() => {
-      RESTCountriesClient.get(`/capital/${termoDeBusca}`).then((result) => {
-      console.log(result.data);
-    })
-    });
-  };
+  const [nomePais, setNomePais] = useState('')
+  const [pais, setPais] = useState<any>(null)
 
+  const buscarPorNome = () => {
+
+    RESTCountriesClient.get(`name/${nomePais}`)
+      .then(resultado => {
+
+        setPais(resultado.data[0])
+
+      })
+
+  }
 
   return (
+
     <View style={styles.container}>
+
       <TextInput
         style={styles.input}
-        placeholder="Digite um país ou capital"
-        onChangeText={(termo) =>
-          setTermo(termo)
-        }
-        value={termo}
-      ></TextInput>
-      <Pressable
-        style={styles.button}
-        onPress={() => {
-          carregarDados(termo);
-        }}
-      >
-        <Text style={styles.buttonText}>
-          {"Buscar"}
-        </Text>
-      </Pressable>
+        placeholder='Digite o nome do país'
+        value={nomePais}
+        onChangeText={setNomePais}
+      />
+
+      <Button
+        title='Buscar país'
+        onPress={buscarPorNome}
+      />
+
+      {
+        pais && (
+
+          <View style={styles.resultado}>
+
+            <Text>
+              Nome comum: {pais.name.common}
+            </Text>
+
+            <Text>
+              Nome oficial: {pais.name.official}
+            </Text>
+
+            <Text>
+              Nome em russo:
+              {' '}
+              {pais.translations.rus.common}
+            </Text>
+
+            <Text>
+              OpenStreetMap:
+              {' '}
+              {pais.maps.openStreetMaps}
+            </Text>
+
+          </View>
+
+        )
+      }
+
     </View>
+
   )
+
 }
 
 const styles = StyleSheet.create({
-  button: {
-    width: "80%",
-    backgroundColor: "#0096F3",
-    padding: 8,
-    borderRadius: 4,
-  },
-  buttonText: {
-    color: "white",
-    textAlign: "center",
-  },
+
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 40,
+    justifyContent: 'center',
+    padding: 20
   },
+
   input: {
-    width: "80%",
-    borderColor: "grey",
     borderWidth: 1,
-    marginBottom: 12,
-    padding: 6,
-    textAlign: "center",
-    borderRadius: 4,
+    borderColor: 'gray',
+    marginBottom: 10,
+    padding: 10,
+    borderRadius: 5
   },
-});
+
+  resultado: {
+    marginTop: 20
+  }
+
+})
